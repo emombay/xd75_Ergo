@@ -49,22 +49,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * .--------------------------------------------------------------------------------------------------------------------------------------.
  * |   `    | 1      | 2      | 3      | 4      | 5      | UNDO   |PrintSc |  Redo  | 6      | 7      | 8      | 9      | 0      | NUM    |
  * |--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+-----------------|
- * | TAB    | Q      | D      | R      | W      | B      | DELETE | NUM    |CRTL+Win| J      | F      | U      | P      | ;      | \      |
+ * | TAB    | Q      | D      | R      | W      | B      | DELETE | CAPS   |CRTL+Win| J      | F      | U      | P      | ;      | \      |
  * |--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+-----------------+--------|
- * | CODE   | A      | S      | H      | T      | G      | _      | CAPS   | Meh    | Y      | N      | E      | O      | I      | '      |
+ * | CODE   | A      | S      | H      | T      | G      | _      | Esc    | Meh    | Y      | N      | E      | O      | I      | '      |
  * |--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------------------------+--------|
  * | LSHIFT | Z      | X      | M      | C      | V      | App    | COPY   | Enter  | K      | L      | ,      | .      | /      | RSHIFT |
  * |--------+--------+--------+--------+--------+-----------------+--------+--------+--------+--------+-----------------+--------+--------|
- * | LCTRL  | AltTab |  LGui  |  Alt   |  Esc   |  UTIL  | BackSp | PASTE  | Enter  | SPACE  |  Left  |  Down  |   Up   | Right  | TT(NUM)|
+ * | LCTRL  | AltTab |  LGui  |  Alt   | RCTRL  |  UTIL  | BackSp | PASTE  | Enter  | SPACE  |  Left  |  Down  |   Up   | Right  | TT(NUM)|
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
 
  [_WORK] = { 
   { KC_GRV,  KC_1,     KC_2,    KC_3,    KC_4,   KC_5,   KC_UNDO, KC_PSCR, KC_REDO,      KC_6,   KC_7,   KC_8,    KC_9,    KC_0,    TO(_NUM) },
-  { KC_TAB,  KC_Q,     KC_D,    KC_R,    KC_W,   KC_B,   KC_DELT, TO(_NUM),M(CTRLWIN),   KC_J,   KC_F,   KC_U,    KC_P,    KC_SCLN, KC_BSLS, },
-  { SYMB,    KC_A,     KC_S,    KC_H,    KC_T,   KC_G,   KC_UNDS, KC_CAPS, MEH_T(KC_NO), KC_Y,   KC_N,   KC_E,    KC_O,    KC_I,    KC_QUOT, },
+  { KC_TAB,  KC_Q,     KC_D,    KC_R,    KC_W,   KC_B,   KC_DELT, KC_CAPS, M(CTRLWIN),   KC_J,   KC_F,   KC_U,    KC_P,    KC_SCLN, KC_BSLS, },
+  { SYMB,    KC_A,     KC_S,    KC_H,    KC_T,   KC_G,   KC_UNDS, KC_ESC,  MEH_T(KC_NO), KC_Y,   KC_N,   KC_E,    KC_O,    KC_I,    KC_QUOT, },
   { KC_LSFT, KC_Z,     KC_X,    KC_M,    KC_C,   KC_V,   KC_APP,  KC_COPY, KC_ENT,       KC_K,   KC_L,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, },
-  { KC_LCTL, M(ALTTAB),KC_LGUI, KC_LALT, KC_ESC, UTIL,   KC_BSPC, KC_PASTE,KC_ENT,       KC_SPC, KC_LEFT,KC_DOWN, KC_UP,   KC_RGHT, NUM },
+  { KC_LCTL, M(ALTTAB),KC_LGUI, KC_LALT, KC_RCTL,UTIL,   KC_BSPC, KC_PASTE,KC_ENT,       KC_SPC, KC_LEFT,KC_DOWN, KC_UP,   KC_RGHT, NUM },
  },
 /* Keymap 1: Basic layer
  * .--------------------------------------------------------------------------------------------------------------------------------------.
