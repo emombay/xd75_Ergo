@@ -1,18 +1,10 @@
-#ifndef CONFIG_USER_H
-#define CONFIG_USER_H
-
-#include "../../config.h"
+#pragma once
 
 #define ONESHOT_TAP_TOGGLE 2
-#define ONESHOT_TIMEOUT 3000
 
 #define ONESHOT_TIMEOUT 3000
 #define TAPPING_TERM 200
-#define PREVENT_STUCK_MODIFIERS
-#define FORCE_NKRO
-#define LEADER_TIMEOUT 1000
 
-#endif
 #define RGBLIGHT_COLOR_LAYER_0 0x00, 0x00, 0xFF
 #define RGBLIGHT_COLOR_LAYER_1 0x00, 0x00, 0xFF 
 #define RGBLIGHT_COLOR_LAYER_2 0xFF, 0x00, 0x00 

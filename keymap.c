@@ -1,9 +1,4 @@
-#include "xd75.h"
-#include <stdarg.h>
-#include "action_layer.h"
-#include "version.h"
-#include "action_util.h"
-#include "eeconfig.h"
+#include QMK_KEYBOARD_H
 
 #define _______ KC_TRNS
 
@@ -15,16 +10,16 @@
 #define _ADJ 5 // adjust keys
 #define _GAME 6 // game keys
 
-enum ergodox_keycodes {
-  WRKMN = SAFE_RANGE,
+enum keyboard_keycodes {
+  WRKMN = QK_KB_0,
   QWERTY,
   SYMB,
   UTIL,
   NUM,
   ADJUST,
   GAME,
-  VRSN,
-  EPRM
+  EPRM,
+  ALTTAB
 };
 
 #define KC_COPY LCTL(KC_C)
@@ -40,9 +35,9 @@ enum {
   TD_3EQ,
   TD_2EQ
 };
-#define ALTTAB 1
-#define CTRLWIN 2
-#define CTRLSHIFT 3
+
+bool is_alt_tab_active = false; // ADD this near the beginning of keymap.c
+uint16_t alt_tab_timer = 0;     // we will be using them soon.
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Workman layer
@@ -60,11 +55,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
  [_WORK] = { 
-  { KC_GRV,  KC_1,     KC_2,    KC_3,    KC_4,   KC_5,   KC_UNDO, KC_PSCR, KC_REDO,      KC_6,   KC_7,   KC_8,    KC_9,    KC_0,    TO(_NUM) },
-  { KC_TAB,  KC_Q,     KC_D,    KC_R,    KC_W,   KC_B,   KC_DELT, KC_CAPS, M(CTRLWIN),   KC_J,   KC_F,   KC_U,    KC_P,    KC_SCLN, KC_BSLS, },
-  { SYMB,    KC_A,     KC_S,    KC_H,    KC_T,   KC_G,   KC_UNDS, KC_ESC,  MEH_T(KC_NO), KC_Y,   KC_N,   KC_E,    KC_O,    KC_I,    KC_QUOT, },
-  { KC_LSFT, KC_Z,     KC_X,    KC_M,    KC_C,   KC_V,   KC_APP,  KC_COPY, KC_ENT,       KC_K,   KC_L,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, },
-  { KC_LCTL, M(ALTTAB),KC_LGUI, KC_LALT, KC_RCTL,UTIL,   KC_BSPC, KC_PASTE,KC_ENT,       KC_SPC, KC_LEFT,KC_DOWN, KC_UP,   KC_RGHT, NUM },
+  { KC_GRV,  KC_1,     KC_2,    KC_3,    KC_4,   KC_5,   KC_UNDO, KC_PSCR, KC_REDO,          KC_6,   KC_7,   KC_8,    KC_9,    KC_0,    TO(_NUM) },
+  { KC_TAB,  KC_Q,     KC_D,    KC_R,    KC_W,   KC_B,   KC_DEL, KC_CAPS, LCTL(LGUI(KC_NO)),KC_J,   KC_F,   KC_U,    KC_P,    KC_SCLN, KC_BSLS, },
+  { SYMB,    KC_A,     KC_S,    KC_H,    KC_T,   KC_G,   KC_UNDS, KC_ESC,  MEH_T(KC_NO),     KC_Y,   KC_N,   KC_E,    KC_O,    KC_I,    KC_QUOT, },
+  { KC_LSFT, KC_Z,     KC_X,    KC_M,    KC_C,   KC_V,   KC_APP,  KC_COPY, KC_ENT,           KC_K,   KC_L,   KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, },
+  { KC_LCTL, ALTTAB,KC_LGUI, KC_LALT, KC_RCTL,UTIL,   KC_BSPC, KC_PASTE,KC_ENT,           KC_SPC, KC_LEFT,KC_DOWN, KC_UP,   KC_RGHT, NUM },
  },
 /* Keymap 1: Basic layer
  * .--------------------------------------------------------------------------------------------------------------------------------------.
@@ -146,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
  [_NUM] = { 
-  { _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_NLCK, KC_PSLS, KC_PAST, KC_PMNS, TO(_ADJ) },
+  { _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_NUM, KC_PSLS, KC_PAST, KC_PMNS, TO(_ADJ) },
   { _______, _______, KC_BTN1, KC_MS_U, KC_BTN2, _______, _______, _______, _______, _______, KC_KP_7, KC_KP_8, KC_KP_9, KC_PPLS, _______ },
   { _______, _______, KC_MS_L, KC_MS_D, KC_MS_R, _______, _______, _______, _______, _______, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, _______ },
   { _______, _______, _______, _______, KC_APP,  _______, _______, _______, _______, _______, KC_KP_1, KC_KP_2, KC_KP_3, KC_PENT, _______ },
@@ -167,7 +162,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJ] = {
 
-   { _______,  _______,  _______,  _______,  _______,  _______,       RGB_VAD, WRKMN,   RGB_HUD, VRSN,     EPRM,     _______,  AG_NORM,  AG_SWAP,  TO(_GAME) },
+   { _______,  _______,  _______,  _______,  _______,  _______,       RGB_VAD, WRKMN,   RGB_HUD, _______,     EPRM,  _______,  AG_NORM,  AG_SWAP,  TO(_GAME) },
    { _______  ,_______,  _______,  _______,  _______,  _______,       RGB_VAI ,QWERTY,  RGB_HUI, _______,  _______,  _______,  _______,  _______,  _______ },
    { _______  ,_______,  _______,  _______,  _______,  _______,       _______ ,RGB_MOD, _______, _______,  _______,  _______,  _______,  _______,  _______ },
    { _______  ,_______,  _______,  _______,  _______,  _______,       _______ ,_______, _______, _______,  _______,  _______,  _______,  _______,  _______ },
@@ -206,86 +201,53 @@ void persistant_default_layer_set(uint16_t default_layer) {
   default_layer_set(default_layer);
 }
 
-#define TAP_ONCE(code)  \
-  register_code (code); \
-  unregister_code (code)
-
-static void m_tapn (uint8_t code, ...) {
-  uint8_t kc = code;
-  va_list ap;
-
-  va_start(ap, code);
-  do {
-    register_code(kc);
-    unregister_code(kc);
-    wait_ms(50);
-    kc = va_arg(ap, int);
-  } while (kc != 0);
-  va_end(ap);
-}
-
-void dance_eq (qk_tap_dance_state_t *state, void *user_data) {
+void dance_eq (tap_dance_state_t *state, void *user_data) {
   switch (state->count) {
     case 1: // ===
-      m_tapn(KC_EQL, KC_EQL, KC_EQL, 0);
+      SEND_STRING("===");
       break;
     case 2: // !==
-      register_code(KC_LSHIFT);
-      m_tapn(KC_1, 0);
-      unregister_code(KC_LSHIFT);
-      m_tapn(KC_EQL, KC_EQL, 0);
+      SEND_STRING("!==");
       break;
     default:
       reset_tap_dance(state);
   }
 }
 
-void dance_two_eq (qk_tap_dance_state_t *state, void *user_data) {
+void dance_two_eq (tap_dance_state_t *state, void *user_data) {
   switch (state->count) {
     case 1: // ==
-      m_tapn(KC_EQL, KC_EQL, 0);
+      SEND_STRING("==");
       break;
     case 2: // !=
-      register_code(KC_LSHIFT);
-      m_tapn(KC_1, 0);
-      unregister_code(KC_LSHIFT);
-      m_tapn(KC_EQL, 0);
+      SEND_STRING("!=");
       break;
     default:
       reset_tap_dance(state);
   }
 }
 
-void dance_fun (qk_tap_dance_state_t *state, void *user_data) {
+void dance_fun (tap_dance_state_t *state, void *user_data) {
   switch (state->count) {
     case 1: // =>    
-      m_tapn(KC_EQL, 0);
-      register_code(KC_LSFT);
-      m_tapn(KC_DOT, 0);
-      unregister_code(KC_LSFT);
+      SEND_STRING("=>");
       break;
     case 2: // () => {}
-      register_code(KC_LSFT);
-      m_tapn(KC_9, KC_0, KC_SPC, 0);
-      unregister_code(KC_LSFT);
-      m_tapn(KC_EQL, 0);
-      register_code(KC_LSFT);
-      m_tapn(KC_DOT, KC_SPC, KC_LBRC, KC_RBRC, 0);
-      unregister_code(KC_LSFT);
+      SEND_STRING("() => {}");
       break;
     default:
       reset_tap_dance(state);
   }
 }
 
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
  [TD_FUN] = ACTION_TAP_DANCE_FN (dance_fun)
  ,[TD_3EQ] = ACTION_TAP_DANCE_FN (dance_eq)
  ,[TD_2EQ] = ACTION_TAP_DANCE_FN (dance_two_eq)
 };
 
 // Custom keycodes
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
   //Cancle one-shot mods.
   switch (keycode) {
@@ -325,12 +287,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return false;
           break;
-        case VRSN:
-          if (record->event.pressed) {
-            SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
-          }
-          return false;
-          break;
         case EPRM:
           if (record->event.pressed) {
             eeconfig_init();
@@ -338,31 +294,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
           break;
       }
-    return true;
+    return process_record_user(keycode, record);
 }
 
-
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-  // MACRODOWN only works in this function
-      switch(id) {
-		case ALTTAB: 
-		if (record->event.pressed) {
-			return MACRO( D(LALT), D(TAB), W(200), U(TAB), END );
-		} else {
-			return MACRO( U(LALT), END );
-		}
-		break;
-		case CTRLWIN: 
-		if (record->event.pressed) {
-			return MACRO( D(LCTL), D(LGUI), END );
-		} else {
-			return MACRO( U(LGUI), U(LCTL), END );
-		}
-		break;
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) { // This will do most of the grunt work with the keycodes.
+    case ALTTAB:
+      if (record->event.pressed) {
+        if (!is_alt_tab_active) {
+          is_alt_tab_active = true;
+          register_code(KC_LALT);
+        }
+        alt_tab_timer = timer_read();
+        register_code(KC_TAB);
+      } else {
+        unregister_code(KC_TAB);
       }
-    return MACRO_NONE;
-};
+      break;
+  }
+  return true;
+}
+
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
@@ -374,12 +326,16 @@ void matrix_init_user(void) {
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
+   if (is_alt_tab_active) {
+    if (timer_elapsed(alt_tab_timer) > 1000) {
+      unregister_code(KC_LALT);
+      is_alt_tab_active = false;
+    }
+  }
 };
 
-uint32_t layer_state_set_user(uint32_t state) {
-
-  uint8_t layer = biton32(state);
-  switch (layer) {
+layer_state_t layer_state_set_user(layer_state_t state) {
+  switch (get_highest_layer(state)) {
       case _WORK:
         #ifdef RGBLIGHT_COLOR_LAYER_0
           rgblight_setrgb(RGBLIGHT_COLOR_LAYER_0);
